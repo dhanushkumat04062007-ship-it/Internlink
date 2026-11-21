@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function CompanyLogin({ setCompany, goToSignup, goBack }) {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ function CompanyLogin({ setCompany, goToSignup, goBack }) {
     if (!email || !password) { setError("Please fill in all fields"); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/company-login", {
+      const res = await fetch(`${API_URL}/company-login`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });

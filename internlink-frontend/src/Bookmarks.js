@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function Bookmarks({ user }) {
   const [bookmarks, setBookmarks] = useState([]);
@@ -9,11 +10,11 @@ function Bookmarks({ user }) {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:5000/bookmarks/${user.UserID}`)
+    fetch(`${API_URL}/bookmarks/${user.UserID}`)
       .then(r => r.json())
       .then(res => { if (res.success) setBookmarks(res.data); setLoading(false); })
       .catch(() => setLoading(false));
-    fetch(`http://localhost:5000/user-applied-ids/${user.UserID}`)
+    fetch(`${API_URL}/user-applied-ids/${user.UserID}`)
       .then(r => r.json())
       .then(res => { if (res.success) setAppliedIds(res.data); })
       .catch(() => {});
@@ -21,7 +22,7 @@ function Bookmarks({ user }) {
 
   const removeBookmark = async (internshipId) => {
     try {
-      await fetch(`http://localhost:5000/bookmark/${user.UserID}/${internshipId}`, { method: "DELETE" });
+      await fetch(`${API_URL}/bookmark/${user.UserID}/${internshipId}`, { method: "DELETE" });
       setBookmarks(bookmarks.filter(b => b.InternshipID !== internshipId));
       addToast("Bookmark removed", "info");
     } catch { addToast("Failed to remove", "error"); }
@@ -29,7 +30,7 @@ function Bookmarks({ user }) {
 
   const apply = async (internshipId) => {
     try {
-      const res = await fetch("http://localhost:5000/apply", {
+      const res = await fetch(`${API_URL}/apply`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.UserID, internshipId })
       });

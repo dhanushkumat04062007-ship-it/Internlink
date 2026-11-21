@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function Internships({ user }) {
   const [data, setData] = useState([]);
@@ -21,7 +22,7 @@ function Internships({ user }) {
     if (jobType) params.set("jobType", jobType);
     if (paymentType) params.set("paymentType", paymentType);
     if (sort) params.set("sort", sort);
-    fetch(`http://localhost:5000/internships?${params}`)
+    fetch(`${API_URL}/internships?${params}`)
       .then(r => r.json())
       .then(res => { if (res.success) setData(res.data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -30,10 +31,10 @@ function Internships({ user }) {
   useEffect(() => { fetchInternships(); }, [fetchInternships]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/categories").then(r => r.json()).then(res => { if (res.success) setCategories(res.data); }).catch(() => {});
+    fetch(`${API_URL}/categories`).then(r => r.json()).then(res => { if (res.success) setCategories(res.data); }).catch(() => {});
     if (user) {
-      fetch(`http://localhost:5000/user-applied-ids/${user.UserID}`).then(r => r.json()).then(res => { if (res.success) setAppliedIds(res.data); }).catch(() => {});
-      fetch(`http://localhost:5000/bookmark-ids/${user.UserID}`).then(r => r.json()).then(res => { if (res.success) setBookmarkIds(res.data); }).catch(() => {});
+      fetch(`${API_URL}/user-applied-ids/${user.UserID}`).then(r => r.json()).then(res => { if (res.success) setAppliedIds(res.data); }).catch(() => {});
+      fetch(`${API_URL}/bookmark-ids/${user.UserID}`).then(r => r.json()).then(res => { if (res.success) setBookmarkIds(res.data); }).catch(() => {});
     }
   }, [user]);
 
@@ -45,7 +46,7 @@ function Internships({ user }) {
 
   const apply = async (id) => {
     try {
-      const res = await fetch("http://localhost:5000/apply", {
+      const res = await fetch(`${API_URL}/apply`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.UserID, internshipId: id })
       });
@@ -59,11 +60,11 @@ function Internships({ user }) {
     const isBookmarked = bookmarkIds.includes(id);
     try {
       if (isBookmarked) {
-        await fetch(`http://localhost:5000/bookmark/${user.UserID}/${id}`, { method: "DELETE" });
+        await fetch(`${API_URL}/bookmark/${user.UserID}/${id}`, { method: "DELETE" });
         setBookmarkIds(bookmarkIds.filter(b => b !== id));
         addToast("Bookmark removed", "info");
       } else {
-        await fetch("http://localhost:5000/bookmark", {
+        await fetch(`${API_URL}/bookmark`, {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: user.UserID, internshipId: id })
         });

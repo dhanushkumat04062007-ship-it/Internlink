@@ -9,8 +9,10 @@ const SALT_ROUNDS = 10;
 /* =========================
    MIDDLEWARE
 ========================= */
+// CLIENT_URL: comma-separated list of allowed frontend origins (defaults to any origin)
+const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map(o => o.trim()) : "*";
 app.use(cors({
-  origin: "*",
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }));
 app.use(express.json());
@@ -740,6 +742,7 @@ app.get("/company-stats/:companyId", async (req, res) => {
 /* =========================================================
    START SERVER
 ========================================================= */
-app.listen(5000, "0.0.0.0", () => {
-  console.log("🚀 InternLink server running on port 5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 InternLink server running on port ${PORT}`);
 });

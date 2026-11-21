@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function CompanyDashboard({ company }) {
   const [activeTab, setActiveTab] = useState("overview");
@@ -14,11 +15,11 @@ function CompanyDashboard({ company }) {
 
   const fetchData = useCallback(() => {
     if (!company) return;
-    fetch(`http://localhost:5000/company-applications/${company.CompanyID}`)
+    fetch(`${API_URL}/company-applications/${company.CompanyID}`)
       .then(r => r.json()).then(res => { if (res.success) setApps(res.data); }).catch(() => {});
-    fetch(`http://localhost:5000/company-internships/${company.CompanyID}`)
+    fetch(`${API_URL}/company-internships/${company.CompanyID}`)
       .then(r => r.json()).then(res => { if (res.success) setInternships(res.data); }).catch(() => {});
-    fetch(`http://localhost:5000/company-stats/${company.CompanyID}`)
+    fetch(`${API_URL}/company-stats/${company.CompanyID}`)
       .then(r => r.json()).then(res => { if (res.success) setStats(res.data); }).catch(() => {});
   }, [company]);
 
@@ -27,7 +28,7 @@ function CompanyDashboard({ company }) {
 
   const updateStatus = async (id, status) => {
     try {
-      const res = await fetch("http://localhost:5000/update-status", {
+      const res = await fetch(`${API_URL}/update-status`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ applicationId: id, status })
       });
@@ -40,7 +41,7 @@ function CompanyDashboard({ company }) {
   };
 
   const markSeen = async (id) => {
-    await fetch("http://localhost:5000/mark-seen", {
+    await fetch(`${API_URL}/mark-seen`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role: "company", applicationId: id })
     });
@@ -68,7 +69,7 @@ function CompanyDashboard({ company }) {
 
   const saveInternship = async (e) => {
     e.preventDefault();
-    const url = editingId ? `http://localhost:5000/update-internship/${editingId}` : "http://localhost:5000/add-internship";
+    const url = editingId ? `${API_URL}/update-internship/${editingId}` : `${API_URL}/add-internship`;
     const method = editingId ? "PUT" : "POST";
     try {
       const res = await fetch(url, {
@@ -85,7 +86,7 @@ function CompanyDashboard({ company }) {
 
   const deleteInternship = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/delete-internship/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/delete-internship/${id}`, { method: "DELETE" });
       const json = await res.json();
       if (json.success) { addToast("Internship deleted", "info"); fetchData(); }
       else addToast(json.message, "error");
