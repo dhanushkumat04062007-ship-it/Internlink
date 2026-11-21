@@ -83,6 +83,16 @@ npm install
 npm start                 # http://localhost:3000
 ```
 
+The frontend calls `http://localhost:5000` by default. To point it at another API, copy `internlink-frontend/.env.example` to `.env` and set `REACT_APP_API_URL`.
+
+## Deployment
+
+| Part | Suggested host | Settings |
+|---|---|---|
+| Database | Any managed MySQL 8 (Aiven, Railway, PlanetScale-compatible) | Create the `InternLink` database |
+| Backend | Render or Railway (Node web service, root `InternLink-backend`, start `npm start`) | `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `CLIENT_URL` = your frontend URL. `PORT` is read from the host. |
+| Frontend | Vercel or Netlify (root `internlink-frontend`, build `npm run build`, output `build`) | `REACT_APP_API_URL` = your backend URL |
+
 ## API overview
 
 | Area | Endpoints |
@@ -101,11 +111,10 @@ Five tables with foreign keys and cascade deletes: `Users`, `Companies`, `Intern
 ## Known limitations
 
 - The API has no session or token checks yet; the frontend keeps the signed-in user in `localStorage` and sends IDs with each request.
-- The API URL is hardcoded to `http://localhost:5000` in the frontend.
 - No automated tests beyond the Create React App default.
 
 ## Roadmap
 
 - Add JWT authentication and protect the company and student routes
-- Move the API URL to an environment variable and deploy a live demo
+- Deploy a public live demo
 - Resume upload for applications

@@ -1,0 +1,2 @@
+// Base URL of the InternLink API. Set REACT_APP_API_URL when deploying.
+export const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/$/, "");

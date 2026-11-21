@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function StudentProfile({ user, setUser }) {
   const [profile, setProfile] = useState(null);
@@ -9,7 +10,7 @@ function StudentProfile({ user, setUser }) {
   const addToast = useToast();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/user-profile/${user.UserID}`)
+    fetch(`${API_URL}/user-profile/${user.UserID}`)
       .then(r => r.json())
       .then(res => {
         if (res.success) {
@@ -23,7 +24,7 @@ function StudentProfile({ user, setUser }) {
   const saveProfile = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/update-profile/${user.UserID}`, {
+      const res = await fetch(`${API_URL}/update-profile/${user.UserID}`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });

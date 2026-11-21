@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function MyApplications({ user }) {
   const [apps, setApps] = useState([]);
@@ -9,7 +10,7 @@ function MyApplications({ user }) {
 
   const fetchData = useCallback(() => {
     if (!user) return;
-    fetch(`http://localhost:5000/my-applications/${user.UserID}`)
+    fetch(`${API_URL}/my-applications/${user.UserID}`)
       .then(r => r.json())
       .then(res => { if (res.success) setApps(res.data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -25,7 +26,7 @@ function MyApplications({ user }) {
 
   const withdraw = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/withdraw-application/${id}`, { method: "POST" });
+      const res = await fetch(`${API_URL}/withdraw-application/${id}`, { method: "POST" });
       const json = await res.json();
       if (json.success) {
         setApps(apps.map(a => a.ApplicationID === id ? { ...a, Status: "Withdrawn" } : a));
@@ -36,7 +37,7 @@ function MyApplications({ user }) {
 
   const markSeen = async (id) => {
     try {
-      await fetch("http://localhost:5000/mark-seen", {
+      await fetch(`${API_URL}/mark-seen`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: "user", applicationId: id })
       });
@@ -46,7 +47,7 @@ function MyApplications({ user }) {
 
   const markAllSeen = async () => {
     try {
-      await fetch("http://localhost:5000/mark-all-seen", {
+      await fetch(`${API_URL}/mark-all-seen`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: "user", userId: user.UserID })
       });

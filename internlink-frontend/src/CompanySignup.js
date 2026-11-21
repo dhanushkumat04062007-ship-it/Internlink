@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useToast } from "./App";
+import { API_URL } from "./config";
 
 function CompanySignup({ goToLogin }) {
   const [form, setForm] = useState({ name: "", email: "", password: "", industry: "", website: "", description: "" });
@@ -15,7 +16,7 @@ function CompanySignup({ goToLogin }) {
     if (form.password.length < 6) { setError("Password must be at least 6 characters"); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/company-signup", {
+      const res = await fetch(`${API_URL}/company-signup`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });

@@ -9,6 +9,7 @@ import CompanyDashboard from "./CompanyDashboard";
 import StudentProfile from "./StudentProfile";
 import Bookmarks from "./Bookmarks";
 import "./index.css";
+import { API_URL } from "./config";
 
 /* ====== TOAST CONTEXT ====== */
 const ToastContext = createContext();
@@ -62,7 +63,7 @@ function AppContent() {
   useEffect(() => {
     if (!user) return;
     const poll = () => {
-      fetch(`http://localhost:5000/my-applications/${user.UserID}`)
+      fetch(`${API_URL}/my-applications/${user.UserID}`)
         .then(r => r.json())
         .then(res => {
           if (res.success) setUnreadCount(res.data.filter(a => !a.UserSeen).length);
